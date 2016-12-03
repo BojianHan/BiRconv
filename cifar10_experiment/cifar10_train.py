@@ -44,7 +44,8 @@ import numpy as np
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 
-import cifar10
+from cifar10 import inference as modified_inference
+from tensorflow.models.image.cifar10 import cifar10
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -67,7 +68,7 @@ def train():
 
     # Build a Graph that computes the logits predictions from the
     # inference model.
-    logits = cifar10.inference(images)
+    logits = cifar10.modified_inference(images)
 
     # Calculate loss.
     loss = cifar10.loss(logits, labels)
