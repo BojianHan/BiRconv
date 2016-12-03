@@ -247,7 +247,7 @@ def inference(images):
     #                                      stddev=0.04, wd=0.004)
     #biases = _variable_on_cpu('biases', [384], tf.constant_initializer(0.1))
     #local3 = tf.nn.relu(tf.matmul(reshape, weights) + biases, name=scope.name)
-    local3, W1,W2,b_hid,W_mlp,W_hid,b_out = biRconv_layer('local3', reshape, 384)
+    local3, W1,W2,b_hid,W_mlp,W_hid,b_out = birconv.biRconv_layer('local3', reshape, 384)
     _activation_summary(local3)
 
   # local4
@@ -256,7 +256,7 @@ def inference(images):
     #                                      stddev=0.04, wd=0.004)
     #biases = _variable_on_cpu('biases', [192], tf.constant_initializer(0.1))
     #local4 = tf.nn.relu(tf.matmul(local3, weights) + biases, name=scope.name)
-    local4, W1,W2,b_hid,W_mlp,W_hid,b_out = biRconv_layer('local4', reshape, 192)
+    local4, W1,W2,b_hid,W_mlp,W_hid,b_out = birconv.biRconv_layer('local4', reshape, 192)
     _activation_summary(local4)
 
   # linear layer(WX + b),
