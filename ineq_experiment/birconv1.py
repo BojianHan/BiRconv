@@ -1,4 +1,4 @@
-
+# BiRconv 1 layer
 # TensorFlow implementation of multilayer biRconv network
 
 import tensorflow as tf

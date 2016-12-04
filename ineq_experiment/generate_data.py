@@ -5,10 +5,10 @@ import itertools
 N_TEST = 10000
 N_TRAIN = 50000
 
-D = 100
+D = 5
 S = 5
 
-selected = np.random.permutation(100)[:S]
+selected = np.random.permutation(D)[:S]
 
 with open('X_test.csv', 'w') as f1, open('Y_test.csv', 'w') as f2:
     for i in xrange(N_TEST):
