@@ -43,7 +43,7 @@ def biRconv_layer(name, input_vector, output_size):
         b_hid_er = tf.tile(b_hid_e, [batch_size, 1, 1])
 
         # biRconv
-        H = tf.nn.relu(X_ert * W1_er + X_ert * W2_er + b_hid_er)
+        H = tf.nn.relu(X_er * W1_er + X_ert * W2_er + b_hid_er)
 
         # FC initalization (debug)
         #W_mlp = tf.Variable([[1]*output_size]*input_size, dtype=tf.float32)
