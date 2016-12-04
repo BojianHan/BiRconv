@@ -111,8 +111,8 @@ def main():
         #train_step.run(feed_dict={x:[[1,2,3],[2,3,4]], y:[[1,2,3],[2,3,4]]})
         #print W11.eval()
 
-        #merged = tf.merge_all_summaries()
-        #writer = tf.train.SummaryWriter('logs', sess.graph_def)
+        merged = tf.merge_all_summaries()
+        writer = tf.train.SummaryWriter('logs', sess.graph_def)
 
 if __name__ == '__main__':
     main()
