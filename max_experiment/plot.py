@@ -5,6 +5,7 @@ output_files = [
         'birconv',
         'mlp100',
         'mlp10000',
+        'mlp100skip'
 ]
 
 EPOCHS = 100
