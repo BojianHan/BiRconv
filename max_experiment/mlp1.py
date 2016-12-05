@@ -30,7 +30,7 @@ def main():
     b1 = initialize_bias('b1', (1, 100), 0.1)
     h = tf.nn.relu(tf.matmul(x, W1) + b1)
 
-    W2 = initialize_weight('W2', (100, Y_train.shape[1]))
+    W2 = initialize_weight('W2', (10000, Y_train.shape[1]))
     b2 = initialize_bias('b2', (1, Y_train.shape[1]), 0.1)
 
     y_pred = tf.nn.relu(tf.matmul(h, W2) + b2)
