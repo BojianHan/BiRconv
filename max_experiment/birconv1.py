@@ -35,16 +35,16 @@ def biRconv_layer(name, input_vector, output_size):
         X_er = tf.tile(X_e, [1, 1, input_size])
         X_ert = tf.transpose(X_er, [0,2,1])
 
-        # Expand weights by batch size
-        W1_e = tf.reshape(W1, [-1, input_size, input_size])
-        W1_er = tf.tile(W1_e, [batch_size, 1, 1])
-        W2_e = tf.reshape(W2, [-1, input_size, input_size])
-        W2_er = tf.tile(W2_e, [batch_size, 1, 1])
-        b_hid_e = tf.reshape(b_hid, [-1, input_size, input_size])
-        b_hid_er = tf.tile(b_hid_e, [batch_size, 1, 1])
+        # Expand weights by batch size (implicitly done by broadcasting)
+        #W1_e = tf.reshape(W1, [-1, input_size, input_size])
+        #W1_er = tf.tile(W1_e, [batch_size, 1, 1])
+        #W2_e = tf.reshape(W2, [-1, input_size, input_size])
+        #W2_er = tf.tile(W2_e, [batch_size, 1, 1])
+        #b_hid_e = tf.reshape(b_hid, [-1, input_size, input_size])
+        #b_hid_er = tf.tile(b_hid_e, [batch_size, 1, 1])
 
         # biRconv
-        H = tf.nn.relu(X_er * W1_er + X_ert * W2_er + b_hid_er)
+        H = tf.nn.relu(X_er * W1 + X_ert * W2 + b_hid)
 
         # FC initalization (debug)
         #W_mlp = tf.Variable([[1]*output_size]*input_size, dtype=tf.float32)
