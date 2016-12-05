@@ -5,6 +5,7 @@ import numpy as np
 
 BATCH_SIZE = 100
 EPOCHS = 100
+HIDDEN = 10000
 
 def initialize_weight(name, shape):
     return tf.get_variable(name, shape, initializer=tf.truncated_normal_initializer(stddev=0.1))
@@ -26,11 +27,11 @@ def main():
     x = tf.placeholder(tf.float32, shape=[None, X_train.shape[1]])
     y = tf.placeholder(tf.int64, shape=[None, Y_train.shape[1]])
 
-    W1 = initialize_weight('W1', (X_train.shape[1], 100))
-    b1 = initialize_bias('b1', (1, 100), 0.1)
+    W1 = initialize_weight('W1', (X_train.shape[1], HIDDEN))
+    b1 = initialize_bias('b1', (1, HIDDEN), 0.1)
     h = tf.nn.relu(tf.matmul(x, W1) + b1)
 
-    W2 = initialize_weight('W2', (10000, Y_train.shape[1]))
+    W2 = initialize_weight('W2', (HIDDEN, Y_train.shape[1]))
     b2 = initialize_bias('b2', (1, Y_train.shape[1]), 0.1)
 
     y_pred = tf.nn.relu(tf.matmul(h, W2) + b2)
