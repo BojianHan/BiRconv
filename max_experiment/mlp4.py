@@ -40,7 +40,7 @@ def main():
     b3 = initialize_bias('b3', (1, Y_train.shape[1]), 0.1)
 
     W4 = initialize_weight('W4', (X_train.shape[1], Y_train.shape[1]))
-    b4 = initalize_bias('b4', (1, Y_train.shape[1]), 0.1)
+    b4 = initialize_bias('b4', (1, Y_train.shape[1]), 0.1)
 
     y_pred = tf.nn.relu(tf.matmul(h2, W3) + tf.matmul(x, W4) + b3)
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(y_pred, y))
