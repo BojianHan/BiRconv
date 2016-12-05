@@ -5,7 +5,10 @@ output_files = [
         'birconv',
         'mlp100',
         'mlp10000',
-        'mlp100skip'
+        'mlp100skip',
+        'mlp10000skip',
+        'mlp1000-1000',
+        'mlp1000-1000skip'
 ]
 
 EPOCHS = 100
@@ -22,6 +25,9 @@ for o in output_files:
     plt.plot(x_range, accs, label=o)
 
 plt.legend(loc='upper left')
+plt.title('Test accuracy comparison over training')
+plt.ylabel('Accuracy')
+plt.xlabel('Iterations')
 plt.show()
 
 # Losses
