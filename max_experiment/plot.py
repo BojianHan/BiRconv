@@ -2,8 +2,9 @@
 import matplotlib.pyplot as plt
 
 output_files = [
-        'birconv1.out',
-        'mlp1.out'
+        'birconv',
+        'mlp100',
+        'mlp10000',
 ]
 
 EPOCHS = 100
@@ -19,7 +20,7 @@ for o in output_files:
                 accs.append(acc)
     plt.plot(x_range, accs, label=o)
 
-plt.legend(loc='lower right')
+plt.legend(loc='upper left')
 plt.show()
 
 # Losses
