@@ -91,6 +91,9 @@ def main():
     with tf.Session() as sess:
         sess.run(tf.initialize_all_variables())
 
+        weights = np.zeros((EPOCHS+1, X_train.shape[1], X_train.shape[1]))
+        weights[0, :, :] = sess.run(W11, feed_dict={x:np.zeros((BATCH_SIZE, X_train.shape[1])), y:np.zeros((BATCH_SIZE, Y_train.shape[1]))})
+
         for e in xrange(EPOCHS):
             for batch in xrange(train_instances / BATCH_SIZE):
                 X_batch = X_train[batch * BATCH_SIZE : (batch+1) * BATCH_SIZE, :]
@@ -106,6 +109,8 @@ def main():
                 Y_batch = Y_test[batch * BATCH_SIZE : (batch+1) * BATCH_SIZE, :]
                 acc_sum  += sess.run(accuracy, feed_dict={x:X_batch, y:Y_batch})
             print '>>> Epoch %d, Iterations: %d, Test Accuracy: %.5f' % (e+1, (e+1) * train_instances, acc_sum / (test_instances / BATCH_SIZE))
+
+            weights[e+1, :, :] = sess.run(W11, feed_dict={x:np.zeros((BATCH_SIZE, X_train.shape[1])), y:np.zeros((BATCH_SIZE, Y_train.shape[1]))})
 
         #print y_pred.eval(feed_dict={x:[[1,2,3],[2,3,4]], y:[[1,2,3],[2,3,4]]})
         #train_step.run(feed_dict={x:[[1,2,3],[2,3,4]], y:[[1,2,3],[2,3,4]]})

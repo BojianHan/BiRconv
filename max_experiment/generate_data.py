@@ -9,7 +9,7 @@ D = 100
 
 with open('X_test.csv', 'w') as f1, open('Y_test.csv', 'w') as f2:
     for i in xrange(N_TEST):
-        x = np.random.random((D)) * 2 - 1
+        x = np.random.random((D)) * 4 - 2
         ind = np.argmax(x)
         y = np.zeros((D))
         y[ind] = 1
