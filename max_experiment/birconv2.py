@@ -78,7 +78,7 @@ def main():
     y = tf.placeholder(tf.int64, shape=[BATCH_SIZE, Y_train.shape[1]])
 
     L1, H1,W11,W21,b_hid1,W_mlp1,W_hid1,b_out1 = biRconv_layer('l1', x, Y_train.shape[1])
-    L2, H2,W12,W22,b_hid2,W_mlp2,W_hid2,b_out2 = biRconv_layer('l2', L2, Y_train.shape[1])
+    L2, H2,W12,W22,b_hid2,W_mlp2,W_hid2,b_out2 = biRconv_layer('l2', L1, Y_train.shape[1])
     y_pred = L2
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(y_pred, y))
     train_step = tf.train.AdamOptimizer(1e-4).minimize(loss)
