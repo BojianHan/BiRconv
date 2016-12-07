@@ -84,7 +84,7 @@ def main():
     accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(y_pred, 1), tf.argmax(y, 1)), tf.float32))
 
     X_vis = np.arange(X_train.shape[1]) / 50.0 - 0.99
-    X_vis = X_vis.reshape((1, X_train.shape[1])).repeat(BATCH_SIZE, aixs=0)
+    X_vis = X_vis.reshape((1, X_train.shape[1])).repeat(BATCH_SIZE, axis=0)
     Y_vis = np.zeroes((BATCH_SIZE, Y_train.shape[1]))
 
     # NOTE: instances should be multiple of BATCH_SIZE
