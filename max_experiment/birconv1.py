@@ -85,7 +85,7 @@ def main():
 
     X_vis = np.arange(X_train.shape[1]) / 50.0 - 0.99
     X_vis = X_vis.reshape((1, X_train.shape[1])).repeat(BATCH_SIZE, axis=0)
-    Y_vis = np.zeroes((BATCH_SIZE, Y_train.shape[1]))
+    Y_vis = np.zeros((BATCH_SIZE, Y_train.shape[1]))
 
     # NOTE: instances should be multiple of BATCH_SIZE
     train_instances = np.shape(X_train)[0]
