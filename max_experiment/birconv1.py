@@ -60,7 +60,7 @@ def biRconv_layer(name, input_vector, output_size):
         H_f = tf.reshape(H, [-1, input_size**2])
         output_vector = tf.nn.relu(tf.matmul(input_vector, W_mlp) + tf.matmul(H_f, W_hid) + b_out)
 
-    return (output_vector, W1, W2, b_hid, W_mlp, W_hid, b_out)
+    return (output_vector, H, W1, W2, b_hid, W_mlp, W_hid, b_out)
 
 def load_data():
     X_train = np.genfromtxt('X_train.csv', delimiter=',')
@@ -74,15 +74,17 @@ def main():
     X_train, Y_train, X_test, Y_test = load_data()
 
     # Unfortunately due to implementation details, BATCH_SIZE is fixed at start
-    x = tf.placeholder(tf.float32, shape=[BATCH_SIZE, X_train.shape[1]])
-    y = tf.placeholder(tf.int64, shape=[BATCH_SIZE, Y_train.shape[1]])
+    x = tf.placeholder(tf.float32, shape=[None, X_train.shape[1]])
+    y = tf.placeholder(tf.int64, shape=[None, Y_train.shape[1]])
 
-    L1, W11,W21,b_hid1,W_mlp1,W_hid1,b_out1 = biRconv_layer('l1', x, Y_train.shape[1])
-    #L2, W12,W22,b_hid2,W_mlp2,W_hid2,b_out2 = biRconv_layer('l2', L1, OUTPUT_SIZE)
+    L1, H1,W11,W21,b_hid1,W_mlp1,W_hid1,b_out1 = biRconv_layer('l1', x, Y_train.shape[1])
     y_pred = L1
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(y_pred, y))
     train_step = tf.train.AdamOptimizer(1e-4).minimize(loss)
     accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(y_pred, 1), tf.argmax(y, 1)), tf.float32))
+
+    X_vis = np.arange(X_train.shape[1]) / 50.0 - 0.99
+    Y_vis = np.zeroes((1, Y_train.shape[1]))
 
     # NOTE: instances should be multiple of BATCH_SIZE
     train_instances = np.shape(X_train)[0]
@@ -91,8 +93,8 @@ def main():
     with tf.Session() as sess:
         sess.run(tf.initialize_all_variables())
 
-        weights = np.zeros((EPOCHS+1, X_train.shape[1], X_train.shape[1]))
-        weights[0, :, :] = sess.run(W11, feed_dict={x:np.zeros((BATCH_SIZE, X_train.shape[1])), y:np.zeros((BATCH_SIZE, Y_train.shape[1]))})
+        acts = np.zeros((EPOCHS+1, X_train.shape[1], X_train.shape[1]))
+        acts[0, :, :] = sess.run(H, feed_dict={x:X_vis, y:Y_vis})[0,:,:]
 
         for e in xrange(EPOCHS):
             for batch in xrange(train_instances / BATCH_SIZE):
@@ -110,7 +112,7 @@ def main():
                 acc_sum  += sess.run(accuracy, feed_dict={x:X_batch, y:Y_batch})
             print '>>> Epoch %d, Iterations: %d, Test Accuracy: %.5f' % (e+1, (e+1) * train_instances, acc_sum / (test_instances / BATCH_SIZE))
 
-            weights[e+1, :, :] = sess.run(W11, feed_dict={x:np.zeros((BATCH_SIZE, X_train.shape[1])), y:np.zeros((BATCH_SIZE, Y_train.shape[1]))})
+            acts[e+1, :, :] = sess.run(H, feed_dict={x:X_vis, y:Y_vis})[0,:,:]
 
         #print y_pred.eval(feed_dict={x:[[1,2,3],[2,3,4]], y:[[1,2,3],[2,3,4]]})
         #train_step.run(feed_dict={x:[[1,2,3],[2,3,4]], y:[[1,2,3],[2,3,4]]})
@@ -118,6 +120,7 @@ def main():
 
         #merged = tf.merge_all_summaries()
         #writer = tf.train.SummaryWriter('logs', sess.graph_def)
+    np.save('acts.npy', acts)
 
 if __name__ == '__main__':
     main()
