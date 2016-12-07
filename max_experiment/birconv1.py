@@ -74,8 +74,8 @@ def main():
     X_train, Y_train, X_test, Y_test = load_data()
 
     # Unfortunately due to implementation details, BATCH_SIZE is fixed at start
-    x = tf.placeholder(tf.float32, shape=[None, X_train.shape[1]])
-    y = tf.placeholder(tf.int64, shape=[None, Y_train.shape[1]])
+    x = tf.placeholder(tf.float32, shape=[BATCH_SIZE, X_train.shape[1]])
+    y = tf.placeholder(tf.int64, shape=[BATCH_SIZE, Y_train.shape[1]])
 
     L1, H1,W11,W21,b_hid1,W_mlp1,W_hid1,b_out1 = biRconv_layer('l1', x, Y_train.shape[1])
     y_pred = L1
@@ -84,7 +84,8 @@ def main():
     accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(y_pred, 1), tf.argmax(y, 1)), tf.float32))
 
     X_vis = np.arange(X_train.shape[1]) / 50.0 - 0.99
-    Y_vis = np.zeroes((1, Y_train.shape[1]))
+    X_vis = X_vis.reshape((1, X_train.shape[1])).repeat(BATCH_SIZE, aixs=0)
+    Y_vis = np.zeroes((BATCH_SIZE, Y_train.shape[1]))
 
     # NOTE: instances should be multiple of BATCH_SIZE
     train_instances = np.shape(X_train)[0]
