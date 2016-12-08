@@ -112,8 +112,9 @@ def main():
             for batch in xrange(test_instances / BATCH_SIZE):
                 X_batch = X_test[batch * BATCH_SIZE : (batch+1) * BATCH_SIZE, :]
                 Y_batch = Y_test[batch * BATCH_SIZE : (batch+1) * BATCH_SIZE, :]
-                acc_sum  += sess.run(accuracy, feed_dict={x:X_batch, y:Y_batch})
-                top5_sum += sess.run(top5, feed_dict={x:X_batch, y:Y_batch})
+                [a, b] = sess.run([accuracy, top5], feed_dict={x:X_batch, y:Y_batch})
+                acc_sum += a
+                top5_sum += b
             print '>>> Epoch %d, Iterations: %d, Top5: %.5f, Test Accuracy: %.5f' % (e+1, (e+1) * train_instances, top5_sum / (test_instances / BATCH_SIZE), acc_sum / (test_instances / BATCH_SIZE))
 
             acts[e+1, :, :] = sess.run(H1, feed_dict={x:X_vis, y:Y_vis})[0,:,:]

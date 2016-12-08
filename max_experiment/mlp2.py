@@ -58,8 +58,7 @@ def main():
                 print 'Iterations: %d, Loss: %.5f' % (e * train_instances + (batch+1)*BATCH_SIZE, loss_value)
 
             # Evaluate test accuracy at end of each epoch
-            test_acc = sess.run(accuracy, feed_dict={x:X_test, y:Y_test})
-            top5_sum = sess.run(top5, feed_dict={x:X_batch, y:Y_batch})
+            [test_acc, top5_sum] = sess.run([accuracy, top5], feed_dict={x:X_test, y:Y_test})
             print '>>> Epoch %d, Iterations: %d, Top5: %.5f, Test Accuracy: %.5f' % (e+1, (e+1) * train_instances, top5_sum, test_acc)
 
 if __name__ == '__main__':
