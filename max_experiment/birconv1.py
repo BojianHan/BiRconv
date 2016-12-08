@@ -108,6 +108,7 @@ def main():
 
             # Evaluate test accuracy at end of each epoch
             acc_sum = 0.0
+            top5_sum = 0.0
             for batch in xrange(test_instances / BATCH_SIZE):
                 X_batch = X_test[batch * BATCH_SIZE : (batch+1) * BATCH_SIZE, :]
                 Y_batch = Y_test[batch * BATCH_SIZE : (batch+1) * BATCH_SIZE, :]
