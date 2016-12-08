@@ -43,6 +43,7 @@ def main():
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(y_pred, y))
     train_step = tf.train.AdamOptimizer(1e-4).minimize(loss)
     accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(y_pred, 1), tf.argmax(y, 1)), tf.float32))
+    top5 = tf.reduce_mean(tf.cast(tf.nn.in_top_k(y_pred, tf.argmax(y, 1), 5), tf.float32))
 
     # NOTE: instances should be multiple of BATCH_SIZE
     train_instances = np.shape(X_train)[0]
@@ -61,7 +62,8 @@ def main():
 
             # Evaluate test accuracy at end of each epoch
             test_acc = sess.run(accuracy, feed_dict={x:X_test, y:Y_test})
-            print '>>> Epoch %d, Iterations: %d, Test Accuracy: %.5f' % (e+1, (e+1) * train_instances, test_acc)
+            top5_sum += sess.run(top5, feed_dict={x:X_batch, y:Y_batch})
+            print '>>> Epoch %d, Iterations: %d, Top5: %.5f, Test Accuracy: %.5f' % (e+1, (e+1) * train_instances, top5_sum, test_acc)
 
 if __name__ == '__main__':
     main()
