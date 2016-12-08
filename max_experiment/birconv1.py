@@ -82,6 +82,7 @@ def main():
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(y_pred, y))
     train_step = tf.train.AdamOptimizer(1e-4).minimize(loss)
     accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(y_pred, 1), tf.argmax(y, 1)), tf.float32))
+    top5 = tf.reduce_mean(tf.cast(tf.nn.in_top_k(y_pred, tf.argmax(y, 1))), tf.float32))
 
     X_vis = np.arange(X_train.shape[1]) / 50.0 - 0.99
     X_vis = X_vis.reshape((1, X_train.shape[1])).repeat(BATCH_SIZE, axis=0)
@@ -111,7 +112,8 @@ def main():
                 X_batch = X_test[batch * BATCH_SIZE : (batch+1) * BATCH_SIZE, :]
                 Y_batch = Y_test[batch * BATCH_SIZE : (batch+1) * BATCH_SIZE, :]
                 acc_sum  += sess.run(accuracy, feed_dict={x:X_batch, y:Y_batch})
-            print '>>> Epoch %d, Iterations: %d, Test Accuracy: %.5f' % (e+1, (e+1) * train_instances, acc_sum / (test_instances / BATCH_SIZE))
+                top5_sum += sess.run(top5, feed_dict={x:X_batch, y:Y_batch})
+            print '>>> Epoch %d, Iterations: %d, Top5: %.5f, Test Accuracy: %.5f' % (e+1, (e+1) * train_instances, top5_sum / (test_instances / BATCH_SIZE), acc_sum / (test_instances / BATCH_SIZE))
 
             acts[e+1, :, :] = sess.run(H1, feed_dict={x:X_vis, y:Y_vis})[0,:,:]
 
