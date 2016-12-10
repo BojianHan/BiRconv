@@ -81,8 +81,9 @@ def main():
     y_pred = L1
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(y_pred, y))
     train_step = tf.train.AdamOptimizer(1e-4).minimize(loss)
-    accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(y_pred, 1), tf.argmax(y, 1)), tf.float32))
-    top5 = tf.reduce_mean(tf.cast(tf.nn.in_top_k(y_pred, tf.argmax(y, 1), 5), tf.float32))
+    #accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(y_pred, 1), tf.argmax(y, 1)), tf.float32))
+    #top5 = tf.reduce_mean(tf.cast(tf.nn.in_top_k(y_pred, tf.argmax(y, 1), 5), tf.float32))
+    accs = [tf.reduce_mean(tf.cast(tf.nn.in_top_k(y_pred, tf.argmax(y, 1), i), tf.float32)) for i in range(1, 6)]
 
     X_vis = np.arange(X_train.shape[1]) / 50.0 - 0.99
     X_vis = X_vis.reshape((1, X_train.shape[1])).repeat(BATCH_SIZE, axis=0)
@@ -107,15 +108,21 @@ def main():
                 print 'Iterations: %d, Loss: %.5f' % (e * train_instances + (batch+1)*BATCH_SIZE, loss_value)
 
             # Evaluate test accuracy at end of each epoch
-            acc_sum = 0.0
-            top5_sum = 0.0
+            #acc_sum = 0.0
+            #top5_sum = 0.0
+            accs_sum = np.zeros((5))
             for batch in xrange(test_instances / BATCH_SIZE):
                 X_batch = X_test[batch * BATCH_SIZE : (batch+1) * BATCH_SIZE, :]
                 Y_batch = Y_test[batch * BATCH_SIZE : (batch+1) * BATCH_SIZE, :]
-                [a, b] = sess.run([accuracy, top5], feed_dict={x:X_batch, y:Y_batch})
-                acc_sum += a
-                top5_sum += b
-            print '>>> Epoch %d, Iterations: %d, Top5: %.5f, Test Accuracy: %.5f' % (e+1, (e+1) * train_instances, top5_sum / (test_instances / BATCH_SIZE), acc_sum / (test_instances / BATCH_SIZE))
+                #[a, b] = sess.run([accuracy, top5], feed_dict={x:X_batch, y:Y_batch})
+                #acc_sum += a
+                #top5_sum += b
+                acc_vals = sess.run(accs, feed_dict={x:X_batch, y:Y_batch})
+                for i, a in enumerate(acc_vals):
+                    accs_sum[i] += a
+            accs_sum /= (test_instances / BATCH_SIZE)
+            print '>>> Epoch %d, Iterations: %d, Top-1: %.5f, Top-2: %.5f, Top-3: %.5f, Top-4: %.5f, Top-5: %.5f' % (e+1, (e+1)*train_instances, accs_sum[0], accs_sum[1], accs_sum[2], accs_sum[3], accs_sum[4])
+            #print '>>> Epoch %d, Iterations: %d, Top5: %.5f, Test Accuracy: %.5f' % (e+1, (e+1) * train_instances, top5_sum / (test_instances / BATCH_SIZE), acc_sum / (test_instances / BATCH_SIZE))
 
             acts[e+1, :, :] = sess.run(H1, feed_dict={x:X_vis, y:Y_vis})[0,:,:]
 

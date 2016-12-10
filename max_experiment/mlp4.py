@@ -45,7 +45,8 @@ def main():
     y_pred = tf.nn.relu(tf.matmul(h2, W3) + tf.matmul(x, W4) + b3)
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(y_pred, y))
     train_step = tf.train.AdamOptimizer(1e-4).minimize(loss)
-    accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(y_pred, 1), tf.argmax(y, 1)), tf.float32))
+    #accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(y_pred, 1), tf.argmax(y, 1)), tf.float32))
+    accs = [tf.reduce_mean(tf.cast(tf.nn.in_top_k(y_pred, tf.argmax(y, 1), i), tf.float32)) for i in range(1, 6)]
 
     # NOTE: instances should be multiple of BATCH_SIZE
     train_instances = np.shape(X_train)[0]
@@ -63,8 +64,10 @@ def main():
                 print 'Iterations: %d, Loss: %.5f' % (e * train_instances + (batch+1)*BATCH_SIZE, loss_value)
 
             # Evaluate test accuracy at end of each epoch
-            test_acc = sess.run(accuracy, feed_dict={x:X_test, y:Y_test})
-            print '>>> Epoch %d, Iterations: %d, Test Accuracy: %.5f' % (e+1, (e+1) * train_instances, test_acc)
+            #test_acc = sess.run(accuracy, feed_dict={x:X_test, y:Y_test})
+            #print '>>> Epoch %d, Iterations: %d, Test Accuracy: %.5f' % (e+1, (e+1) * train_instances, test_acc)
+            acc_vals = sess.run(accs, feed_dict={x:X_test, y:Y_test})
+            print '>>> Epoch %d, Iterations: %d, Top-1: %.5f, Top-2: %.5f, Top-3: %.5f, Top-4: %.5f, Top-5: %.5f' % (e+1, (e+1)*train_instances, acc_vals[0], acc_vals[1], acc_vals[2], acc_vals[3], acc_vals[4])
 
 if __name__ == '__main__':
     main()
