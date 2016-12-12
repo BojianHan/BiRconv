@@ -5,7 +5,7 @@ import numpy as np
 
 BATCH_SIZE = 100
 EPOCHS = 100
-HIDDEN = 10000
+HIDDEN = 100
 
 def initialize_weight(name, shape):
     return tf.get_variable(name, shape, initializer=tf.truncated_normal_initializer(stddev=0.1))
